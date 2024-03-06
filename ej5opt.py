@@ -56,22 +56,29 @@ class Context:
         return self._strategy.scrape(url, stock_symbol)
 
 
-def main():
-    stock_symbol = input("Enter the stock symbol (e.g., TSLA for Tesla): ")
-    url = f'https://finance.yahoo.com/quote/{stock_symbol}'
-    
+class introducir_beauti:
     context = Context(BeautifulSoupStrategy())
     values = context.scrape(url, stock_symbol)
     print('Values:', values)
 
     datos_requeridos1 = "datos_beautifulSoap.json"
-    datos_requeridos2 = "datos_seleniumStrategy.json"
-
+    
     with open(datos_requeridos1, "w") as archivo:
         json.dump(values, archivo)
 
+
+class introducir_beauti:
+    datos_requeridos2 = "datos_seleniumStrategy.json"
     #with open(datos_requeridos2, "w") as archivo:
     #    json.dump(values, archivo)
+
+def main():
+    stock_symbol = input("Enter the stock symbol (e.g., TSLA for Tesla): ")
+    url = f'https://finance.yahoo.com/quote/{stock_symbol}'
+    
+    
+introducir_beauti
+    
 
 
 if __name__ == "__main__":

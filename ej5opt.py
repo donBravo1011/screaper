@@ -9,37 +9,32 @@ class ScrapeStrategy():
 
 
 class BeautifulSoupStrategy(ScrapeStrategy):
-    def scrape(self, url):
+    def scrape(self, url, stock_symbol):
         response = requests.get(url)
         if response.status_code == 200:
             soup = BeautifulSoup(response.content, 'html.parser')
-            
+            data = {}
             open_value_td = soup.find('td', {'data-test': 'OPEN-value'})
             close_value_td = soup.find('td', {'data-test': 'PREV_CLOSE-value'})
             volume_td = soup.find('td', {'data-test': 'TD_VOLUME-value'})
             market_cap_td = soup.find('td', {'data-test': 'MARKET_CAP-value'})
-            
-            data = {}
+            data['stock_symbol'] = stock_symbol
             if open_value_td:
                 data['open'] = open_value_td.text.strip()
             else:
                 data['open'] = 'Open Value not found'
-                
             if close_value_td:
                 data['close'] = close_value_td.text.strip()
             else:
                 data['close'] = 'Close Value not found'
-                
             if volume_td:
                 data['volume'] = volume_td.text.strip()
             else:
                 data['volume'] = 'Volume Value not found'
-                
             if market_cap_td:
                 data['market_cap'] = market_cap_td.text.strip()
             else:
                 data['market_cap'] = 'Market Cap Value not found'
-                
             return data
         else:
             return f'Failed to retrieve the webpage, status code: {response.status_code}'
@@ -57,16 +52,27 @@ class Context:
     def set_strategy(self, strategy):
         self._strategy = strategy
 
-    def scrape(self, url):
-        return self._strategy.scrape(url)
+    def scrape(self, url, stock_symbol):
+        return self._strategy.scrape(url, stock_symbol)
 
 
-url = 'https://finance.yahoo.com/quote/TSLA'
-context = Context(BeautifulSoupStrategy())
-values = context.scrape(url)
-print('Values:', values)
+def main():
+    stock_symbol = input("Enter the stock symbol (e.g., TSLA for Tesla): ")
+    url = f'https://finance.yahoo.com/quote/{stock_symbol}'
+    
+    context = Context(BeautifulSoupStrategy())
+    values = context.scrape(url, stock_symbol)
+    print('Values:', values)
 
-datos_requeridos1 = "datos.json"
+    datos_requeridos1 = "datos_beautifulSoap.json"
+    datos_requeridos2 = "datos_seleniumStrategy.json"
 
-with open(datos_requeridos1, "w") as archivo:
-    json.dump(values, archivo)
+    with open(datos_requeridos1, "w") as archivo:
+        json.dump(values, archivo)
+
+    #with open(datos_requeridos2, "w") as archivo:
+    #    json.dump(values, archivo)
+
+
+if __name__ == "__main__":
+    main()
